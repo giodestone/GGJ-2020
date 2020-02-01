@@ -4,17 +4,20 @@ using UnityEngine;
 
 public class GroundMovement : MonoBehaviour
 {
+    private BalloonMove Balloon;
+    bool InBalloon = true;
+
     [SerializeField] private float MoveSpeed = 5.0f;
     // Start is called before the first frame update
     void Start()
     {
-        
+        Balloon = GameObject.Find("Balloon").GetComponent<BalloonMove>();  
     }
 
     // Update is called once per frame
-    void Update()
+    public void Update()
     {
-
+       
     }
 
     public void CalculateMovement()
@@ -46,7 +49,7 @@ public class GroundMovement : MonoBehaviour
         }
     }
 
-    void TriggerDialogue(Collider other)
+    void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Owner1" && Input.GetKey(KeyCode.A))
         {
