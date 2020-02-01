@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Cart
   - Baloon
+  - WindManager
   layers:
   - Default
   - TransparentFX
