@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class GroundMovement : MonoBehaviour
 {
-
     //private BalloonMove Balloon;
     bool InBalloon = false;
     public bool IsMovementActive = true;
@@ -21,28 +20,16 @@ public class GroundMovement : MonoBehaviour
     void Start()
     {
         //Balloon = GameObject.Find("Balloon").GetComponent<BalloonMove>();  
-
-    private BalloonMove Balloon;
-    bool InBalloon = true;
-
-    [SerializeField] private float MoveSpeed = 5.0f;
-    // Start is called before the first frame update
-    void Start()
-    {
-        Balloon = GameObject.Find("Balloon").GetComponent<BalloonMove>();  
-
     }
 
     // Update is called once per frame
     public void Update()
     {
-
         CalculateMovement();
     }
 
     public void CalculateMovement()
     {
-
         if (IsMovementActive == false) return;
 
         float x = Input.GetAxis("Horizontal");
@@ -70,30 +57,6 @@ public class GroundMovement : MonoBehaviour
         if (Collider.transform.position.y < transform.position.y)
         {
             grounded = true;
-        float HorizontalInput = Input.GetAxis("Horizontal");
-        float VerticalInput = Input.GetAxis("Vertical");
-
-        Vector3 Direction = new Vector3(HorizontalInput, VerticalInput);
-
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            transform.Translate(0.0f, 0.0f, MoveSpeed * Time.deltaTime);
-        }
-        else if (Input.GetKey(KeyCode.RightArrow))
-        {
-            transform.Translate(0.0f, 0.0f, -MoveSpeed * Time.deltaTime);
-        }
-        else if (Input.GetKey(KeyCode.UpArrow))
-        {
-            transform.Translate(MoveSpeed * Time.deltaTime, 0.0f, 0.0f);
-        }
-        else if (Input.GetKey(KeyCode.DownArrow))
-        {
-            transform.Translate(MoveSpeed * Time.deltaTime, 0.0f, 0.0f);
-        }
-        else if (Input.GetKey(KeyCode.Space))
-        {
-            transform.Translate(0.0f, MoveSpeed * Time.deltaTime, 0.0f);
         }
     }
 
@@ -115,7 +78,4 @@ public class GroundMovement : MonoBehaviour
         }
 
     }
-
-}
-
 }

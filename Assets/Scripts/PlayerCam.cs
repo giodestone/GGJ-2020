@@ -43,7 +43,8 @@ public class PlayerCam : MonoBehaviour
 
                 if (raycastHit.transform.gameObject.CompareTag("Boiler"))
                 {
-                    //TODO
+                    var hitobj = raycastHit.transform.gameObject;
+                    script.IsMovementActive = false;
                 }
             }
         }
