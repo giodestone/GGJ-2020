@@ -10,12 +10,15 @@ public class PlayerCam : MonoBehaviour
     private GameObject player;
     Vector3 offset;
     float xRotation = 0f;
+    private GroundMovement script;
 
     // Start is called before the first frame update
     void Start()
     {
+
         offset = transform.position - player.transform.position;
         Cursor.lockState = CursorLockMode.Locked;
+        script = player.GetComponent<GroundMovement>();
     }
 
     // Update is called once per frame
@@ -35,6 +38,12 @@ public class PlayerCam : MonoBehaviour
                 {
                     var hitobj = raycastHit.transform.gameObject;
                     hitobj.GetComponent<SpriteRenderer>().color = new Color(1f, 0f, 0f);
+                    script.IsMovementActive = false;
+                }
+
+                if (raycastHit.transform.gameObject.CompareTag("Boiler"))
+                {
+                    //TODO
                 }
             }
         }
@@ -42,6 +51,8 @@ public class PlayerCam : MonoBehaviour
 
     void MouseMovement()
     {
+        if (script.IsMovementActive == false) return;
+
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 

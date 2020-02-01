@@ -5,7 +5,8 @@ using UnityEngine;
 public class GroundMovement : MonoBehaviour
 {
     //private BalloonMove Balloon;
-    bool InBalloon = true;
+    bool InBalloon = false;
+    public bool IsMovementActive = true;
 
     [SerializeField] private float MoveSpeed = 15.0f;
     [SerializeField] private float JumpVel = 10.0f;
@@ -29,6 +30,8 @@ public class GroundMovement : MonoBehaviour
 
     public void CalculateMovement()
     {
+        if (IsMovementActive == false) return;
+
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
