@@ -17,7 +17,7 @@ public class GrapplingHook : MonoBehaviour
     static bool fired;
     public bool hooked;
     
-    //public GameObject HookedObject;
+    public GameObject HookedObject;
 
     float currentDistance;
     [SerializeField]
@@ -57,36 +57,36 @@ public class GrapplingHook : MonoBehaviour
                 }
             }
 
-            //if (hooked == true && fired == true)
-            //{
-            //    Hook.transform.parent = HookedObject.transform;
+            if (hooked == true && fired == true)
+            {
+                Hook.transform.parent = HookedObject.transform;
 
-            //    transform.position = Vector3.MoveTowards(transform.position, Hook.transform.position, Time.deltaTime * playerTravelSpeed);
-            //    float distanceToHook = Vector3.Distance(transform.position, Hook.transform.position);
+                transform.position = Vector3.MoveTowards(transform.position, Hook.transform.position, Time.deltaTime * playerTravelSpeed);
+                float distanceToHook = Vector3.Distance(transform.position, Hook.transform.position);
 
-            //    this.GetComponent<Rigidbody>().useGravity = false;
+                this.GetComponent<Rigidbody>().useGravity = false;
 
-            //    if (distanceToHook < 1)
-            //    {
-            //        if(grounded == false)
-            //        {
-            //            if (this.transform.position.y > HookedObject.transform.position.y)
-            //            {
-            //                this.transform.Translate(Vector3.forward * Time.deltaTime * 13.0f);
-            //                this.transform.Translate(Vector3.down * Time.deltaTime * 18.0f);
-            //            }
-            //            this.transform.Translate(Vector3.forward * Time.deltaTime * 13.0f);
-            //            this.transform.Translate(Vector3.up * Time.deltaTime * 18.0f);
-            //        }
+                if (distanceToHook < 1)
+                {
+                    if (grounded == false)
+                    {
+                        if (this.transform.position.y > HookedObject.transform.position.y)
+                        {
+                            this.transform.Translate(Vector3.forward * Time.deltaTime * 13.0f);
+                            this.transform.Translate(Vector3.down * Time.deltaTime * 18.0f);
+                        }
+                        this.transform.Translate(Vector3.forward * Time.deltaTime * 13.0f);
+                        this.transform.Translate(Vector3.up * Time.deltaTime * 18.0f);
+                    }
 
-            //        StartCoroutine("Climb");
-            //    }
-            //}
-            //else
-            //{
-            //    Hook.transform.parent = HookHolder.transform;
-            //    this.GetComponent<Rigidbody>().useGravity = true;
-            //}
+                    StartCoroutine("Climb");
+                }
+            }
+            else
+            {
+                Hook.transform.parent = HookHolder.transform;
+                this.GetComponent<Rigidbody>().useGravity = true;
+            }
         }
     }
 

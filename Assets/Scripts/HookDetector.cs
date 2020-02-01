@@ -11,7 +11,7 @@ public class HookDetector : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player.GetComponent<GrapplingHook>().hooked = true;
+        player.GetComponent<GrapplingHook>().hooked = false;
        
     }
 
@@ -26,7 +26,7 @@ public class HookDetector : MonoBehaviour
         if (other.tag == "Cloud")
         {
             player.GetComponent<GrapplingHook>().hooked = true;
-            //player.GetComponent<GrapplingHook>().HookedObject = other.gameObject;
+            player.GetComponent<GrapplingHook>().HookedObject = other.gameObject;
         }
     }
 }
