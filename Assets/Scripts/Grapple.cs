@@ -13,7 +13,7 @@ public class Grapple : MonoBehaviour
     [SerializeField]
     GameObject player;
     [SerializeField]
-    BalloonMove balloon;
+    GameObject balloon;
 
     [SerializeField]
     float hookTravelSpeed;
@@ -70,10 +70,18 @@ public class Grapple : MonoBehaviour
 
         if(other.tag == "Cloud")
         {
-            currentDistance = Vector3.Distance(this.transform.position, player.transform.position);
+            balloon.GetComponent<Rigidbody>().isKinematic = false;
+            distanceToHook.x = this.transform.position.x - player.transform.position.x;
+            distanceToHook.y = this.transform.position.y - player.transform.position.y;
+            distanceToHook.z = this.transform.position.z - player.transform.position.z;
 
             //convert current distance to vector3 somehow and put in place of currentDistance
-            balloon.GetComponent<BalloonMove>().transform.Translate(distanceToHook * Time.deltaTime * balloonMoveSpeed);
+            balloon.transform.Translate(distanceToHook * Time.deltaTime * balloonMoveSpeed);
+
+            if (distanceToHook.x < 1 || distanceToHook.y < 1 || distanceToHook.z < 1)
+            {
+                balloon.GetComponent<Rigidbody>().isKinematic = true;
+            }
         }
     }
 }
