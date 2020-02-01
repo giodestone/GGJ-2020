@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Baloon : MonoBehaviour
 {
     private WindManager WindManager;
@@ -32,10 +33,10 @@ public class Baloon : MonoBehaviour
     private const float AirPressureAtStrato = 0.001f; // in atm at 47km
 
     private float SeaYPos = 0f;
-    private float StratoYPos = 2000f; // At what point does atmospheric pressue become same as AirPressureAtStrato
+    public static readonly float StratoYPos = 2000f; // At what point does atmospheric pressue become same as AirPressureAtStrato
 
-    private const float TempLossSeaLevel = 0.1f;
-    private const float TempLossStrato = 0.4f;
+    private const float TempLossSeaLevel = 0.4f;
+    private const float TempLossStrato = 1.5f;
     private float CurrentTemperatureLoss
     {
         get

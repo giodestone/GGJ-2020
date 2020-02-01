@@ -5,14 +5,18 @@ using UnityEngine;
 
 public class WindManager : MonoBehaviour
 {
+    private Baloon baloon;
+
     private Perlin PerlinX = new Perlin();
     private Perlin PerlinY = new Perlin();
     private Perlin PerlinZ = new Perlin();
 
     private Perlin Perlin = new Perlin();
-    [SerializeField] private List<Vector3> IslandPositions; // For creating drag towards locations.
+    [SerializeField] private List<Transform> IslandPositions = new List<Transform>(); // For creating drag towards locations.
+    [SerializeField] private float IslandPull = 10000f;
+    [SerializeField] private float IslandPullDistanceRadius = 200f;
 
-    [SerializeField] public Vector3 LevelSize = new Vector3(1024f, 256f, 1024f);
+    [SerializeField] public Vector3 LevelSize = new Vector3(2000f, 2000f, 2000f);
     [SerializeField] private float LevelScale = 1f;
 
 
@@ -20,7 +24,19 @@ public class WindManager : MonoBehaviour
 
     private Rigidbody balloonRigidBody;
 
-    private float WindForceMultiplyer = 10f;
+
+    private const float MinWindMultiplierAtSeaLevel = 50f;
+    private const float WindMultiperAtStrato = 2000f;
+
+    private float WindForceMultiplyer
+    {
+        get
+        {
+            return Mathf.Clamp(Mathf.LerpUnclamped(MinWindMultiplierAtSeaLevel, WindMultiperAtStrato,
+                balloonRigidBody.position.y / Baloon.StratoYPos), MinWindMultiplierAtSeaLevel, float.PositiveInfinity );
+        }
+    }
+    
 
     void Start()
     {
@@ -29,14 +45,8 @@ public class WindManager : MonoBehaviour
         PerlinZ.SetSeed(2);
 
         balloonRigidBody = GameObject.FindGameObjectWithTag("Baloon").GetComponentInChildren<Rigidbody>();
+        baloon = GameObject.FindObjectOfType<Baloon>();
     }
-
-    //private float GetNoise(Vector3 pos)
-    //{
-    //    return Perlin.Noise(pos.x / (LevelSize.x * LevelScale),
-    //        pos.y / (LevelSize.y * LevelScale),
-    //        pos.z / (LevelSize.z * LevelScale)); // Apply a scale to make the perlin noise a bit more spread out.
-    //}
 
     public Vector3 GetWindAtPoint(Vector3 point, Vector3 worldSize)
     {
@@ -45,26 +55,41 @@ public class WindManager : MonoBehaviour
         float noisePerlinY = PerlinY.Noise(point.x / worldSize.x, point.y / worldSize.y, point.z / worldSize.z);
         float noisePerlinZ = PerlinZ.Noise(point.x / worldSize.x, point.y / worldSize.y, point.z / worldSize.z);
 
-        return new Vector3(noisePerlinX, noisePerlinY, noisePerlinZ) * WindForceMultiplyer;
+        Vector3 pullToIslandDirection = point - IslandPositions[0].position;
+        float pullToIslandDistance = pullToIslandDirection.magnitude;
+        pullToIslandDirection.Normalize();
+
+        Vector3 finalPullToIsland = Vector3.zero;
+        if (pullToIslandDistance < IslandPullDistanceRadius)
+        {
+            ///TODO ADD THOSE PULL INTO SPHERES.
+        }
+
+        return new Vector3(noisePerlinX, noisePerlinY, noisePerlinZ) * WindForceMultiplyer + finalPullToIsland;
     }
 
     private void OnDrawGizmos()
     {
         if (!DrawDebug) return;
 
-        for (int x = -256; x < 256; x+=16)
+        const int step = 128;
+
+        const int xzSize = 1024;
+        const int ySize = 1000;
+
+        for (int x = -xzSize; x < xzSize; x+= step)
         {
-            for (int y = -128; y < 128; y+=16)
+            for (int y = -ySize; y < ySize; y+= step)
             {
-                for (int z = -256; z < 256; z+=16)
+                for (int z = -xzSize; z < xzSize; z+= step)
                 {
                     var posVector = new Vector3(x, y, z);
-                    //posVector += balloonRigidBody.position;
+                    posVector += balloonRigidBody.position;
 
                     var windVector = GetWindAtPoint(posVector, LevelSize);
                     //Gizmos.color = new Color(windVector.magnitude, 0f, 0f);
                     Gizmos.DrawLine(posVector, windVector + posVector);
-                    Gizmos.DrawSphere(posVector, 0.05f);
+                    Gizmos.DrawSphere(posVector, 0.5f);
                 }
             }
         }
