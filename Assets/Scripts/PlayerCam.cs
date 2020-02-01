@@ -8,6 +8,7 @@ public class PlayerCam : MonoBehaviour
     private float mouseSensitivity = 100f;
     [SerializeField]
     private GameObject player;
+
     Vector3 offset;
     float xRotation = 0f;
     private GroundMovement script;
@@ -43,7 +44,8 @@ public class PlayerCam : MonoBehaviour
 
                 if (raycastHit.transform.gameObject.CompareTag("Boiler"))
                 {
-                    //TODO
+                    var hitobj = raycastHit.transform.gameObject;
+                    script.IsMovementActive = false;
                 }
             }
         }
@@ -62,4 +64,5 @@ public class PlayerCam : MonoBehaviour
         transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         player.transform.Rotate(Vector3.up * mouseX);
     }
+
 }
