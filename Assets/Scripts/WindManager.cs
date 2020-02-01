@@ -16,6 +16,8 @@ public class WindManager : MonoBehaviour
     [SerializeField] private float LevelScale = 1f;
 
 
+    [SerializeField] private bool DrawDebug = true;
+
     void Start()
     {
         PerlinX.SetSeed(0);
@@ -37,19 +39,21 @@ public class WindManager : MonoBehaviour
         float noisePerlinY = PerlinY.Noise(point.x / size.x, point.y / size.y, point.z / size.z);
         float noisePerlinZ = PerlinZ.Noise(point.x / size.x, point.y / size.y, point.z / size.z);
 
-        return new Vector3(noisePerlinX, noisePerlinY, noisePerlinZ);
+        return new Vector3(noisePerlinX, noisePerlinY, noisePerlinZ) * 4f;
     }
 
     private void OnDrawGizmos()
     {
-        for (int x = 0; x < 32; x+=2)
+        if (!DrawDebug) return;
+
+            for (int x = 0; x < 32; x+=2)
         {
             for (int y = 0; y < 16; y+=2)
             {
                 for (int z = 0; z < 32; z+=2)
                 {
                     var posVector = new Vector3(x,y,z);
-                    var windVector = GetWindAtPoint(posVector, new Vector3(32, 16, 32));
+                    var windVector = GetWindAtPoint(posVector, LevelSize);
                     //Gizmos.color = new Color(windVector.magnitude, 0f, 0f);
                     Gizmos.DrawLine(posVector, windVector + posVector);
                     Gizmos.DrawSphere(posVector, 0.05f);
