@@ -4,20 +4,51 @@ using UnityEngine;
 
 public class Baloon : MonoBehaviour
 {
+    private WindManager WindManager;
+
     private Rigidbody balloonRigidBody;
     private float BaloonWeight;
     private float CartWeight;
-    
-    [SerializeField]private float BallonTemperatureKelvin = GROUND_TEMP_KELVIN;
+
+    [SerializeField] private float BallonTemperatureKelvin = GROUND_TEMP_KELVIN;
     [SerializeField] private float DebugCTemp;
     private const float BALLOON_COOL_TEMP_KELVIN = GROUND_TEMP_KELVIN;
     private const float GROUND_TEMP_KELVIN = 273f + 20f; // 20C
+    private const float STRATO_TEMP_KELVIN = 273f - 50f; // -50C
 
-    private const float AIR_PRESSURE_ATM = 1.03f; // in atm
     private const float BALOON_VOLUME_LITRES = 2800000f; // 2.8 million litres
-
     private const float ATMO_CONSTANT = 0.08206f;
 
+    private float CurrentAirPressure
+    {
+        get
+        {
+            //Debug.Log("My AtmoPress" + balloonRigidBody.position.y / StratoYPos);
+            return Mathf.Clamp(Mathf.LerpUnclamped(AirPressureAtSea, AirPressureAtStrato, balloonRigidBody.position.y / StratoYPos), 0f, AirPressureAtSea);
+        }
+        //get { return AirPressureAtSea; }
+    }
+    private const float AirPressureAtSea = 1.03f; // in atm
+    private const float AirPressureAtStrato = 0.001f; // in atm at 47km
+
+    private float SeaYPos = 0f;
+    private float StratoYPos = 2000f; // At what point does atmospheric pressue become same as AirPressureAtStrato
+
+    private const float TempLossSeaLevel = 0.1f;
+    private const float TempLossStrato = 0.4f;
+    private float CurrentTemperatureLoss
+    {
+        get
+        {
+            return Mathf.Clamp(Mathf.LerpUnclamped(TempLossSeaLevel, TempLossStrato, transform.position.y / StratoYPos),
+                TempLossSeaLevel, float.PositiveInfinity);
+        }
+    }
+
+    private float MaxTempAtCurrentAltitude
+    {
+        get { return (((STRATO_TEMP_KELVIN - GROUND_TEMP_KELVIN) / StratoYPos) * balloonRigidBody.position.y) + GROUND_TEMP_KELVIN; } // straight line equation.
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -28,26 +59,33 @@ public class Baloon : MonoBehaviour
 
         BaloonWeight = baloon.GetComponentInChildren<Rigidbody>().mass;
         CartWeight = cart.GetComponentInChildren<Rigidbody>().mass;
+
+        WindManager = GameObject.FindGameObjectWithTag("WindManager").GetComponent<WindManager>();
+        var tst = GameObject.FindGameObjectWithTag("WindManager");
     }
 
     // Update is called once per frame
     void Update()
     {
-        var test1 = GetMassOfAir(GetDensityOfCoolAirInBalloon());
-        var test2 = GetMassOfAir(GetDensityOfAirInBalloon());
-        //Debug.Log( (GetMassOfAir(GetDensityOfCoolAirInBalloon()) - GetMassOfAir(GetDensityOfAirInBalloon())) / 1000f);
+        BallonTemperatureKelvin -= CurrentTemperatureLoss * Time.deltaTime;
+        BallonTemperatureKelvin = Mathf.Clamp(BallonTemperatureKelvin, MaxTempAtCurrentAltitude, float.PositiveInfinity);
     }
 
     void FixedUpdate()
     {
+        // Lift
         var kgOfLift = (GetMassOfAir(GetDensityOfCoolAirInBalloon()) - GetMassOfAir(GetDensityOfAirInBalloon())) /
                        100000f;
         var newtonsOfLift = kgOfLift * -Physics.gravity.y;
         var msminus2 = Mathf.Clamp(newtonsOfLift / BaloonWeight, 0f, float.PositiveInfinity);
-
         DebugCTemp = BallonTemperatureKelvin - 273f;
+
         Debug.Log(msminus2);
         balloonRigidBody.AddForce(0f, msminus2, 0f);
+
+
+        // Wind
+        balloonRigidBody.AddForce(WindManager.GetWindAtPoint(balloonRigidBody.position, WindManager.LevelSize));
     }
 
     /// <summary>
@@ -56,7 +94,7 @@ public class Baloon : MonoBehaviour
     /// <returns>Moles of air of 80N/20O in moles.</returns>
     float GetMolesOfCoolAirInBaloon()
     {
-        return (AIR_PRESSURE_ATM * BALOON_VOLUME_LITRES) / (ATMO_CONSTANT * BALLOON_COOL_TEMP_KELVIN);
+        return (CurrentAirPressure * BALOON_VOLUME_LITRES) / (ATMO_CONSTANT * BALLOON_COOL_TEMP_KELVIN);
     }
 
     /// <summary>
@@ -65,7 +103,7 @@ public class Baloon : MonoBehaviour
     /// <returns>Density of air at cool temp in grams over liters.</returns>
     private float GetDensityOfCoolAirInBalloon()
     {
-        return (AIR_PRESSURE_ATM * GetMolesOfCoolAirInBaloon()) / (ATMO_CONSTANT * BALLOON_COOL_TEMP_KELVIN);
+        return (CurrentAirPressure * GetMolesOfCoolAirInBaloon()) / (ATMO_CONSTANT * BALLOON_COOL_TEMP_KELVIN);
     }
 
     /// <summary>
@@ -74,7 +112,7 @@ public class Baloon : MonoBehaviour
     /// <returns>Moles of air in balloon.</returns>
     private float GetCurrentMolesInBalloon()
     {
-        return (AIR_PRESSURE_ATM * BALOON_VOLUME_LITRES) / (ATMO_CONSTANT * BallonTemperatureKelvin);
+        return (CurrentAirPressure * BALOON_VOLUME_LITRES) / (ATMO_CONSTANT * BallonTemperatureKelvin);
     }
 
     /// <summary>
@@ -83,7 +121,7 @@ public class Baloon : MonoBehaviour
     /// <returns>Density of air in grams over liters.</returns>
     private float GetDensityOfAirInBalloon()
     {
-        return (AIR_PRESSURE_ATM * GetCurrentMolesInBalloon()) / (ATMO_CONSTANT * BallonTemperatureKelvin);
+        return (CurrentAirPressure * GetCurrentMolesInBalloon()) / (ATMO_CONSTANT * BallonTemperatureKelvin);
     }
 
     /// <summary>
