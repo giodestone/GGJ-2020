@@ -11,6 +11,14 @@ TagManager:
   - Boiler
   - Washing Machine
   - Flap
+  - Cloud
+  - Gary
+  - Rachel
+  - Ricky
+  - GrappleArea
+  - Hook
+  - HookHolder
+
   layers:
   - Default
   - TransparentFX
