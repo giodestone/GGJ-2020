@@ -56,15 +56,17 @@ public class WindManager : MonoBehaviour
         float noisePerlinY = PerlinY.Noise(point.x / worldSize.x, point.y / worldSize.y, point.z / worldSize.z);
         float noisePerlinZ = PerlinZ.Noise(point.x / worldSize.x, point.y / worldSize.y, point.z / worldSize.z);
 
-        Vector3 pullToIslandDirection = -(point - IslandPositions[0].position);
-        float pullToIslandDistance = pullToIslandDirection.magnitude;
-        pullToIslandDirection.Normalize();
-
         Vector3 finalPullToIslandVector3 = Vector3.zero;
-        if (pullToIslandDistance < IslandPullDistanceRadius)
+        for (int i = 0; i < IslandPositions.Count; ++i)
         {
-            ///TODO ADD THOSE PULL INTO SPHERES.
-            finalPullToIslandVector3 = pullToIslandDirection * Mathf.Lerp(0f, IslandPull, pullToIslandDistance);
+            Vector3 pullToIslandDirection = -(point - IslandPositions[i].position);
+            float pullToIslandDistance = pullToIslandDirection.magnitude;
+            pullToIslandDirection.Normalize();
+
+            if (pullToIslandDistance < IslandPullDistanceRadius)
+            {
+                finalPullToIslandVector3 += pullToIslandDirection * Mathf.Lerp(0f, IslandPull, pullToIslandDistance);
+            }
         }
 
         var final = new Vector3(noisePerlinX, noisePerlinY, noisePerlinZ); // Add windiness
