@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 
 public class Baloon : MonoBehaviour
 {
@@ -29,13 +31,13 @@ public class Baloon : MonoBehaviour
         //get { return AirPressureAtSea; }
     }
     private const float AirPressureAtSea = 1.03f; // in atm
-    private const float AirPressureAtStrato = 0.001f; // in atm at 47km
+    private const float AirPressureAtStrato = 0.4f; // in atm at height
 
     private float SeaYPos = 0f;
-    private float StratoYPos = 2000f; // At what point does atmospheric pressue become same as AirPressureAtStrato
+    public static readonly float StratoYPos = 2000f; // At what point does atmospheric pressue become same as AirPressureAtStrato
 
-    private const float TempLossSeaLevel = 0.1f;
-    private const float TempLossStrato = 0.4f;
+    private const float TempLossSeaLevel = 0.4f;
+    private const float TempLossStrato = 1.5f;
     private float CurrentTemperatureLoss
     {
         get
@@ -132,5 +134,15 @@ public class Baloon : MonoBehaviour
     private float GetMassOfAir(float density)
     {
         return density * BALOON_VOLUME_LITRES;
+    }
+
+    public void AddTemp(float tempToAdd)
+    {
+        BallonTemperatureKelvin += tempToAdd;
+    }
+
+    public float GetTempC()
+    {
+        return BallonTemperatureKelvin - 273f;
     }
 }
