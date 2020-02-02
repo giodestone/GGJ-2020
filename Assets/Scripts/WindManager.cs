@@ -1,17 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using TreeEditor;
+//using TreeEditor;
 using UnityEngine;
 
 public class WindManager : MonoBehaviour
 {
     private Baloon baloon;
 
-    private Perlin PerlinX = new Perlin();
-    private Perlin PerlinY = new Perlin();
-    private Perlin PerlinZ = new Perlin();
+    //private Perlin PerlinX = new Perlin();
+    //private Perlin PerlinY = new Perlin();
+    //private Perlin PerlinZ = new Perlin();
 
-    private Perlin Perlin = new Perlin();
+    //private Perlin Perlin = new Perlin();
     [SerializeField] private List<Transform> IslandPositions = new List<Transform>(); // For creating drag towards locations.
     [SerializeField] private float IslandPull = 1000f;
     [SerializeField] private float IslandPullDistanceRadius = 250f;
@@ -41,9 +41,9 @@ public class WindManager : MonoBehaviour
 
     void Start()
     {
-        PerlinX.SetSeed(0);
-        PerlinY.SetSeed(1);
-        PerlinZ.SetSeed(2);
+        //PerlinX.SetSeed(0);
+        //PerlinY.SetSeed(1);
+        //PerlinZ.SetSeed(2);
 
         balloonRigidBody = GameObject.FindGameObjectWithTag("Baloon").GetComponentInChildren<Rigidbody>();
         baloon = GameObject.FindObjectOfType<Baloon>();
@@ -52,9 +52,12 @@ public class WindManager : MonoBehaviour
     public Vector3 GetWindAtPoint(Vector3 point, Vector3 worldSize)
     {
 
-        float noisePerlinX = PerlinX.Noise(point.x / worldSize.x, point.y / worldSize.y, point.z / worldSize.z);
-        float noisePerlinY = PerlinY.Noise(point.x / worldSize.x, point.y / worldSize.y, point.z / worldSize.z);
-        float noisePerlinZ = PerlinZ.Noise(point.x / worldSize.x, point.y / worldSize.y, point.z / worldSize.z);
+        //float noisePerlinX = PerlinX.Noise(point.x / worldSize.x, point.y / worldSize.y, point.z / worldSize.z);
+        float noisePerlinX = Mathf.PerlinNoise( point.y / worldSize.y, point.z / worldSize.z);
+        //float noisePerlinY = PerlinY.Noise(point.x / worldSize.x, point.y / worldSize.y, point.z / worldSize.z);
+        float noisePerlinY = Mathf.PerlinNoise(point.x / worldSize.x, point.y / worldSize.y);
+        //float noisePerlinZ = PerlinZ.Noise(point.x / worldSize.x, point.y / worldSize.y, point.z / worldSize.z);
+        float noisePerlinZ = Mathf.PerlinNoise(point.x / worldSize.x,  point.z / worldSize.z);
 
         Vector3 finalPullToIslandVector3 = Vector3.zero;
         for (int i = 0; i < IslandPositions.Count; ++i)
