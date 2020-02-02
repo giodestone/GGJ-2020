@@ -13,20 +13,21 @@ public class WindManager : MonoBehaviour
 
     private Perlin Perlin = new Perlin();
     [SerializeField] private List<Transform> IslandPositions = new List<Transform>(); // For creating drag towards locations.
-    [SerializeField] private float IslandPull = 10000f;
-    [SerializeField] private float IslandPullDistanceRadius = 200f;
+    [SerializeField] private float IslandPull = 1000f;
+    [SerializeField] private float IslandPullDistanceRadius = 250f;
 
     [SerializeField] public Vector3 LevelSize = new Vector3(2000f, 2000f, 2000f);
     [SerializeField] private float LevelScale = 1f;
 
-
     [SerializeField] private bool DrawDebug = true;
+
+    [SerializeField] private Vector3 WindDirection = new Vector3(1f, 0f, 0f); // Generally blow in the X axis.
 
     private Rigidbody balloonRigidBody;
 
 
-    private const float MinWindMultiplierAtSeaLevel = 50f;
-    private const float WindMultiperAtStrato = 2000f;
+    private const float MinWindMultiplierAtSeaLevel = 5f;
+    private const float WindMultiperAtStrato = 200f;
 
     private float WindForceMultiplyer
     {
@@ -55,22 +56,28 @@ public class WindManager : MonoBehaviour
         float noisePerlinY = PerlinY.Noise(point.x / worldSize.x, point.y / worldSize.y, point.z / worldSize.z);
         float noisePerlinZ = PerlinZ.Noise(point.x / worldSize.x, point.y / worldSize.y, point.z / worldSize.z);
 
-        Vector3 pullToIslandDirection = point - IslandPositions[0].position;
+        Vector3 pullToIslandDirection = -(point - IslandPositions[0].position);
         float pullToIslandDistance = pullToIslandDirection.magnitude;
         pullToIslandDirection.Normalize();
 
-        Vector3 finalPullToIsland = Vector3.zero;
+        Vector3 finalPullToIslandVector3 = Vector3.zero;
         if (pullToIslandDistance < IslandPullDistanceRadius)
         {
             ///TODO ADD THOSE PULL INTO SPHERES.
+            finalPullToIslandVector3 = pullToIslandDirection * Mathf.Lerp(0f, IslandPull, pullToIslandDistance);
         }
 
-        return new Vector3(noisePerlinX, noisePerlinY, noisePerlinZ) * WindForceMultiplyer + finalPullToIsland;
+        var final = new Vector3(noisePerlinX, noisePerlinY, noisePerlinZ); // Add windiness
+        final += WindDirection; // Add the overall wind direction.
+        final *= WindForceMultiplyer; // Make sure it gets windier the higher up you go.
+        final += finalPullToIslandVector3; // Pull towards islands to make player life easier.
+
+        return final;
     }
 
     private void OnDrawGizmos()
     {
-        if (!DrawDebug) return;
+        if (!DrawDebug || balloonRigidBody == null) return;
 
         const int step = 128;
 
@@ -89,7 +96,7 @@ public class WindManager : MonoBehaviour
                     var windVector = GetWindAtPoint(posVector, LevelSize);
                     //Gizmos.color = new Color(windVector.magnitude, 0f, 0f);
                     Gizmos.DrawLine(posVector, windVector + posVector);
-                    Gizmos.DrawSphere(posVector, 0.5f);
+                    Gizmos.DrawCube(posVector, new Vector3(0.5f, 0.5f, 0.5f));
                 }
             }
         }

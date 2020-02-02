@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -30,7 +31,7 @@ public class Baloon : MonoBehaviour
         //get { return AirPressureAtSea; }
     }
     private const float AirPressureAtSea = 1.03f; // in atm
-    private const float AirPressureAtStrato = 0.001f; // in atm at 47km
+    private const float AirPressureAtStrato = 0.4f; // in atm at height
 
     private float SeaYPos = 0f;
     public static readonly float StratoYPos = 2000f; // At what point does atmospheric pressue become same as AirPressureAtStrato
@@ -133,5 +134,10 @@ public class Baloon : MonoBehaviour
     private float GetMassOfAir(float density)
     {
         return density * BALOON_VOLUME_LITRES;
+    }
+
+    public void AddTemp(float tempToAdd)
+    {
+        BallonTemperatureKelvin += tempToAdd;
     }
 }
