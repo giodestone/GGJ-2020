@@ -140,4 +140,9 @@ public class Baloon : MonoBehaviour
     {
         BallonTemperatureKelvin += tempToAdd;
     }
+
+    public float GetTempC()
+    {
+        return BallonTemperatureKelvin - 273f;
+    }
 }
