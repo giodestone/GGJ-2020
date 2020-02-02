@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GabriellaHappy
+  m_Name: RachGrumpy
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -20,9 +20,11 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: 21300000, guid: 52b41ec513c9d564fbd09e7335e337a1, type: 3}
+      value: {fileID: 21300000, guid: 7d118c2e3fd47f04ea2621357e1ea3b1, type: 3}
     - time: 0.083333336
-      value: {fileID: 21300000, guid: 9e256883bc0d8aa4986eb2295ee19205, type: 3}
+      value: {fileID: 21300000, guid: d16ef87135773af4dbbb314a4ef5db63, type: 3}
+    - time: 0.16666667
+      value: {fileID: 21300000, guid: c90a7a00461ad984abd3f6fee022d8a3, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -42,14 +44,15 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     pptrCurveMapping:
-    - {fileID: 21300000, guid: 52b41ec513c9d564fbd09e7335e337a1, type: 3}
-    - {fileID: 21300000, guid: 9e256883bc0d8aa4986eb2295ee19205, type: 3}
+    - {fileID: 21300000, guid: 7d118c2e3fd47f04ea2621357e1ea3b1, type: 3}
+    - {fileID: 21300000, guid: d16ef87135773af4dbbb314a4ef5db63, type: 3}
+    - {fileID: 21300000, guid: c90a7a00461ad984abd3f6fee022d8a3, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.16666667
+    m_StopTime: 0.25
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
