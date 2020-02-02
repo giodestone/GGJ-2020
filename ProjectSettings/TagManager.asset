@@ -3,7 +3,13 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Boiler
+  - Washing Machine
+  - Cloud
+  - Gary
+  - Rachel
+  - Ricky
   layers:
   - Default
   - TransparentFX
