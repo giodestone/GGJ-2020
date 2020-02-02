@@ -14,6 +14,8 @@ public class Grapple : MonoBehaviour
     GameObject player;
     [SerializeField]
     GameObject balloon;
+    
+    GameObject HookHolder;
 
     [SerializeField]
     float hookTravelSpeed;
@@ -28,7 +30,12 @@ public class Grapple : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        if (this.tag == "HookHold")
+        {
+            this.GetComponent<Rigidbody>().position = balloon.transform.position + new Vector3(1.0f, 1.0f, 0.0f);
+        }
+
+        HookHolder = GameObject.Find("HookHolder");
     }
 
     // Update is called once per frame
@@ -36,25 +43,31 @@ public class Grapple : MonoBehaviour
     {
        if (fired == false)
         {
-            this.transform.position = player.transform.position;
+            this.transform.position = HookHolder.transform.position;
         }
     }
 
     void FireHook()
     {
-        this.transform.Translate(Vector3.forward * Time.deltaTime * hookTravelSpeed);
-        currentDistance = Vector3.Distance(this.transform.position, player.transform.position);
-
-        if (currentDistance >= maxDistance)
+        if (this.tag == "Hook")
         {
-            ReturnHook();
+            this.transform.Translate(Vector3.forward * Time.deltaTime * hookTravelSpeed);
+            currentDistance = Vector3.Distance(this.transform.position, player.transform.position);
+
+            if (currentDistance >= maxDistance)
+            {
+                ReturnHook();
+            }
         }
     }
 
     void ReturnHook()
     {
-        this.transform.position = player.transform.position;
-        fired = false;
+        if (this.tag == "Hook")
+        {
+            this.transform.position = HookHolder.transform.position;
+            fired = false;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -76,7 +89,7 @@ public class Grapple : MonoBehaviour
             distanceToHook.z = this.transform.position.z - player.transform.position.z;
 
             //convert current distance to vector3 somehow and put in place of currentDistance
-            balloon.transform.Translate(distanceToHook * Time.deltaTime * balloonMoveSpeed);
+            balloon.GetComponent<Rigidbody>().MovePosition(distanceToHook * Time.deltaTime * balloonMoveSpeed);
 
             if (distanceToHook.x < 1 || distanceToHook.y < 1 || distanceToHook.z < 1)
             {
