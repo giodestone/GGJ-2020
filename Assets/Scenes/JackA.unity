@@ -510,8 +510,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 154986890}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -40.4, y: 6.9049582, z: -53.47}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalPosition: {x: -40.4, y: 16.43, z: -57.57}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 9
@@ -979,10 +979,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxDistance: 0
-  player: {fileID: 0}
-  balloon: {fileID: 0}
-  hookTravelSpeed: 0
-  balloonMoveSpeed: 0
+  player: {fileID: 104030447}
+  balloon: {fileID: 1704000708}
+  hookTravelSpeed: 10
+  balloonMoveSpeed: 10
 --- !u!1 &1359536216
 GameObject:
   m_ObjectHideFlags: 0
